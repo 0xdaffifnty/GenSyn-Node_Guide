@@ -49,7 +49,7 @@ Here's how to open port 3000:
 
     Step 3. Use the following settings:
 
-    Name--> aloow-gensyn-3000
+    Name--> allow-gensyn-3000
 
     Network--> Default
 
