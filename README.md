@@ -1,4 +1,6 @@
-**Gensyn RL Swarm Node Setup Guide (for Anyone Using Google Cloud + Free Credits)**
+🧠**Gensyn RL Swarm Node Setup Guide (for Anyone Using Google Cloud + Free Credits)**
+
+**_The Gensyn Protocol is a decentralized network designed to power and scale machine learning (ML) compute using blockchain and cryptographic verification. In simple terms, it aims to let anyone with spare computational resources (like GPUs or cloud servers) contribute to training ML models and get rewarded fairly and securely._**
 
 _Welcome! This guide will walk you through installing Gensyn RL Swarm node on Google Cloud (GCP) VM using free $300 credits!_
 
@@ -28,8 +30,6 @@ _**2. Create a VM on Google Cloud (to run the Gensyn node)**_
     Boot disk: Ubuntu 22.04 LTS, 50GB SSD
 
     Firewall: ✅ Check "Allow HTTP" and "Allow HTTPS"
-
-    Under Security → SSH Keys, paste the output of the SSH public key (next step)
 
    Click Create
 
@@ -105,7 +105,7 @@ _**Then follow this to view your public key:**_
 
     Get-Content $env:USERPROFILE\.ssh\id_rsa.pub
 
-    This will print the entire public key — just copy all of it and paste it into your GCP VM
+    This will print the entire public key — Once copied, go back to Google Cloud → your VM → Edit → SSH keys → paste it as a new item and remove the old ones.
 
    Option 2: Open the file manually
 
@@ -117,7 +117,7 @@ _**Then follow this to view your public key:**_
 
     Copy the full line — starts with ssh-rsa and ends with your email
 
-   Once copied, go back to Google Cloud → your VM → Edit → SSH keys → paste it as a new item and remove the old ones.
+    Google Cloud → your VM → Edit → SSH keys → paste it as a new item and remove the old ones.
 
 
 
@@ -150,77 +150,108 @@ Step 1: Update the system
 Step 2: Install dependencies
 
     sudo apt install -y \
+    curl \
+    git \
+    wget \
+    nano \
+    tmux \
+    htop \
+    nvme-cli \
+    lz4 \
+    jq \
+    make \
+    gcc \
+    clang \
+    build-essential \
+    autoconf \
+    automake \
+    pkg-config \
+    libssl-dev \
+    libleveldb-dev \
+    libgbm1 \
+    bsdmainutils \
+    ncdu \
+    unzip \
+    tar
 
-    curl git wget nano tmux htop nvme-cli lz4 jq make gcc clang \
+Installing PYTHON
 
-    build-essential autoconf automake pkg-config libssl-dev libleveldb-dev \
+    sudo apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-venv \
+    python3-dev
 
-    libgbm1 bsdmainutils ncdu unzip tar
+Installing NODE & YARN
 
-Step 3: Install Python
+    sudo apt-get update && curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash - && sudo apt-get install -y nodejs && node -v && sudo npm install -g yarn
 
-    sudo apt install python3 python3-pip -y
-    sudo apt install python3-venv python3-dev build-essential -y
-
-Step 4: Install Node.js & Yarn
-
-    curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
-
-    sudo apt install -y nodejs
-
-    sudo npm install -g yarn
-
-Step 5: Install Docker
+Install Docker
 
     for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do
-
     sudo apt-get remove $pkg
-  
     done
 
-      sudo apt-get update
+    sudo apt-get update
+    sudo apt-get install -y ca-certificates curl gnupg
 
-      sudo apt-get install -y ca-certificates curl gnupg
+    sudo install -m 0755 -d /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
-      sudo install -m 0755 -d /etc/apt/keyrings
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    sudo apt-get update
+    sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-      sudo chmod a+r /etc/apt/keyrings/docker.gpg
+Install Python & PIP
 
-    echo \
+    sudo apt install python3 -y && sudo apt install python3-pip -y
 
-      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
-  
-      https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  
-      sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+Verify Python Version
 
-      sudo apt-get update
+    python3 --version
 
-      sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+Install Dev. tool
 
- Step 6: Install screen
+    sudo apt install python3-dev python3-venv build-essential -y
 
-    sudo apt install screen -y
+Install Yarn
 
-**_6. Clone and Run the Gensyn Node_**
+    sudo apt-get update && sudo apt-get install -y curl gnupg apt-transport-https && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - && echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list && sudo apt-get update && sudo apt-get install -y yarn
 
-Inside the VM:
+Check Version
+
+    yarn --version
+
+Clone RL-Swarm Repo
 
     git clone https://github.com/gensyn-ai/rl-swarm
 
+Navigate in
+
     cd rl-swarm
 
-    python3 -m venv .venv
+Install screen
 
-    source .venv/bin/activate
+    sudo apt install screen -y
+
+Create screen for process
 
     screen -S rlswarm
 
+Install and Run Swarm
+
+    python3 -m venv .venv
+    source .venv/bin/activate
     ./run_rl_swarm.sh
 
-It will ask you Do you want to connect to testnet [Yes/No]
+Wait till you see waiting for UserData.json to be created
+
+    PERFORM POINT 7 (access Gensyn Dashboard from your pc's browser)
+
+After Connecting to GenSyn Dashboard It will ask you Do you want to connect to testnet [Yes/No]
 
     ----> Press Y
 
@@ -296,7 +327,7 @@ From your local terminal, exit the VM (Ctrl + D or exit) and run:
 
 **_Note** if your computer user name is: "mydesktop" & GCP gensyn VM username is "GCPGENSYN" & External Ip is xx.xx.xx.xx then the command would look like this:
 
-    scp -i C:\Users\mydesktop\.ssh\id_rsa GCPGENSYN@xx.xx.xx.xx:/home/"GCPGENSYN"/.gensyn/swarm.pem C:\Users\YourUsername\Downloads\ (it's an example)
+    scp -i C:\Users\mydesktop\.ssh\id_rsa GCPGENSYN@xx.xx.xx.xx:/home/GCPGENSYN/.gensyn/swarm.pem C:\Users\YourUsername\Downloads\ (it's an example)
     
 This will copy the swarm.pem file to your local Downloads folder.
 
