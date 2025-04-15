@@ -257,7 +257,7 @@ After Connecting to GenSyn Dashboard It will ask you Do you want to connect to t
 
 Connect Huggingface API [Yes/No]
 
-    ----> Press Y
+    ----> Press N 
 
     **Note** _Create a huggingface access token---> Visit huggingface.co----> under your profile drop down look for access token----> create a gensyn access token with "Write" permission_**
 
@@ -327,7 +327,7 @@ From your local terminal, exit the VM (Ctrl + D or exit) and run:
 
 **_Note** if your computer user name is: "mydesktop" & GCP gensyn VM username is "GCPGENSYN" & External Ip is xx.xx.xx.xx then the command would look like this:
 
-    scp -i C:\Users\mydesktop\.ssh\id_rsa GCPGENSYN@xx.xx.xx.xx:/home/GCPGENSYN/.gensyn/swarm.pem C:\Users\YourUsername\Downloads\ (it's an example)
+    scp -i C:\Users\mydesktop\.ssh\id_rsa GCPGENSYN@xx.xx.xx.xx:/home/GCPGENSYN/.gensyn/swarm.pem C:\Users\mydesktop\Downloads\ (it's an example)
     
 This will copy the swarm.pem file to your local Downloads folder.
 
