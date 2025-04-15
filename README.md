@@ -77,7 +77,7 @@ Wait a few seconds — the rule will be applied globally to any VM on the defaul
 
 _**4. Create Your Own SSH Key on Your Local PC**_
 
-   Open your terminal (Command Prompt, WSL, Git Bash, or Terminal on Mac/Linux) & run this command:
+   Open your terminal (Command Prompt, powershell, Git Bash, or Terminal on Mac/Linux) & run this command:
 
     ssh-keygen -t rsa -b 4096 -C "your_email@gmail.com"
 
